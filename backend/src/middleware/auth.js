@@ -62,3 +62,9 @@ export const requireAdmin = (req, res, next) => {
 };
 
 export const requireResearcher = requireRole(['super_admin', 'researcher']);
+export const requireUploader = (req, res, next) => {
+  if (["admin", "super_admin", "researcher"].includes(req.user.role)) {
+    return next();
+  }
+  return res.status(403).json({ error: "Upload access denied" });
+};

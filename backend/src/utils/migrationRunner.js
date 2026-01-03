@@ -17,106 +17,63 @@ async function createMigrationsTable() {
       executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
-
-  try {
-    await pool.query(query);
-    console.log('✓ Migrations table ready');
-  } catch (error) {
-    console.error('Error creating migrations table:', error);
-    throw error;
-  }
+  await pool.query(query);
+  console.log('✓ Migrations table ready');
 }
 
+// catch (error) { console.error('Error creating migrations table:', error); throw error; } }
+
+
+
+
 async function getExecutedMigrations() {
-  try {
-    const result = await pool.query(
-      `SELECT filename FROM ${MIGRATIONS_TABLE} ORDER BY id`
-    );
-    return result.rows.map(row => row.filename);
-  } catch (error) {
-    console.error('Error fetching executed migrations:', error);
-    return [];
-  }
+  const result = await pool.query(
+    `SELECT filename FROM ${MIGRATIONS_TABLE} ORDER BY id`
+  );
+  return result.rows.map(row => row.filename);
 }
 
 async function executeMigration(filename, sql) {
   const client = await pool.connect();
-
   try {
     await client.query('BEGIN');
-
-    console.log(`  Executing migration: ${filename}`);
+    console.log(`Executing migration: ${filename}`);
     await client.query(sql);
-
     await client.query(
       `INSERT INTO ${MIGRATIONS_TABLE} (filename) VALUES ($1)`,
       [filename]
     );
-
     await client.query('COMMIT');
-    console.log(`  ✓ Migration completed: ${filename}`);
-  } catch (error) {
+    console.log(`✓ Migration completed: ${filename}`);
+  } catch (err) {
     await client.query('ROLLBACK');
-    console.error(`  ✗ Migration failed: ${filename}`);
-    console.error('  Error:', error.message);
-    throw error;
+    throw err;
   } finally {
     client.release();
   }
 }
 
 export async function runMigrations() {
-  console.log('\n==========================================');
   console.log('Starting Database Migrations');
-  console.log('==========================================\n');
 
-  try {
-    await createMigrationsTable();
+  await createMigrationsTable();
+  const executed = await getExecutedMigrations();
 
-    const executedMigrations = await getExecutedMigrations();
-
-    if (!fs.existsSync(MIGRATIONS_DIR)) {
-      console.log('No migrations directory found. Skipping migrations.');
-      return;
-    }
-
-    const migrationFiles = fs.readdirSync(MIGRATIONS_DIR)
-      .filter(file => file.endsWith('.sql'))
-      .sort();
-
-    if (migrationFiles.length === 0) {
-      console.log('No migration files found.');
-      return;
-    }
-
-    const pendingMigrations = migrationFiles.filter(
-      file => !executedMigrations.includes(file)
-    );
-
-    if (pendingMigrations.length === 0) {
-      console.log('✓ All migrations are up to date\n');
-      return;
-    }
-
-    console.log(`Found ${pendingMigrations.length} pending migration(s)\n`);
-
-    for (const filename of pendingMigrations) {
-      const filePath = path.join(MIGRATIONS_DIR, filename);
-      const sql = fs.readFileSync(filePath, 'utf8');
-      await executeMigration(filename, sql);
-    }
-
-    console.log('\n==========================================');
-    console.log('✓ All migrations completed successfully');
-    console.log('==========================================\n');
-
-  } catch (error) {
-    console.error('\n==========================================');
-    console.error('✗ Migration failed');
-    console.error('==========================================\n');
-    console.error('Error details:', error);
-    throw error;
+  if (!fs.existsSync(MIGRATIONS_DIR)) {
+    console.log('No migrations directory');
+    return;
   }
-}
 
-runMigrations();
+  const files = fs.readdirSync(MIGRATIONS_DIR)
+    .filter(f => f.endsWith('.sql'))
+    .sort();
+
+  for (const file of files) {
+    if (!executed.includes(file)) {
+      const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), 'utf8');
+      await executeMigration(file, sql);
+    }
+  }
+
+  console.log('✓ All migrations done');
+}

@@ -1,8 +1,10 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: "./.env" })
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
+
 import rateLimit from 'express-rate-limit';
 
 import { runMigrations } from './utils/migrationRunner.js';
@@ -12,18 +14,17 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
-import { connectMongo } from "./config/mongo.js";
+
 import path from "path";
 
 
-dotenv.config();
+// dotenv.config();
 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-connectMongo();
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

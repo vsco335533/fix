@@ -32,6 +32,7 @@ router.post(
 
 router.put('/:id', authenticate, requireResearcher, updatePost);
 router.delete('/:id', authenticate, requireResearcher, deletePost);
+// router.put("/:id/remove-pdf", authenticate, removePostPdf);
 
 router.post('/:id/approve', authenticate, requireAdmin, approvePost);
 router.post('/:id/reject', authenticate, requireAdmin, rejectPost);

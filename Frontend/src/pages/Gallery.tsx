@@ -233,19 +233,19 @@ export function Gallery() {
   };
 
   const deleteImage = async (id: string) => {
-         if (!id) return alert("Invalid media ID");
+    if (!id) return alert("Invalid media ID");
     if (!confirm("Are you sure you want to delete this image?")) return;
 
     try {
-      await apiDelete(`/media/${id}`);
+      // ✅ IMPORTANT FIX — send media type
+      await apiDelete(`/media/${id}?type=image`);
       loadImages();
-    } catch {
-      
+    } catch (error) {
+      console.error("Delete failed:", error);
       alert("Failed to delete image");
     }
   };
 
-  // ✅ IMAGE UPLOAD HANDLER (ADMIN ONLY)
   const handleUploadImage = async (file: File) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -296,7 +296,6 @@ export function Gallery() {
 
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* ✅ ADMIN UPLOAD BUTTON */}
         {isAdmin && (
           <div className="mb-6">
             <label className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700">
@@ -335,10 +334,9 @@ export function Gallery() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {images.map((image) => (
               <div
-                key={image._id}
+                key={image.id}
                 className="bg-white rounded-xl border hover:shadow-lg transition overflow-hidden"
               >
-                {/* IMAGE */}
                 <div className="aspect-square bg-gray-100">
                   <img
                     src={image.url}
@@ -347,17 +345,10 @@ export function Gallery() {
                   />
                 </div>
 
-                {/* INFO */}
                 <div className="p-3">
                   <h3 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1">
                     {image.title}
                   </h3>
-
-                  {image.description && (
-                    <p className="text-xs text-gray-600 line-clamp-2 mb-2">
-                      {image.description}
-                    </p>
-                  )}
 
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <div className="flex items-center gap-1">
@@ -365,12 +356,11 @@ export function Gallery() {
                       {new Date(image.created_at).toLocaleDateString()}
                     </div>
 
-                    {/* ADMIN ACTIONS */}
                     {isAdmin && (
                       <div className="flex gap-2">
                         {image.status === "pending" && (
                           <button
-                            onClick={() => approveImage(image._id)}
+                            onClick={() => approveImage(image.id)}
                             className="bg-green-600 text-white px-2 py-1 rounded"
                           >
                             Approve
@@ -378,7 +368,7 @@ export function Gallery() {
                         )}
 
                         <button
-                          onClick={() => deleteImage(image._id)}
+                          onClick={() => deleteImage(image.id)}
                           className="bg-red-600 text-white px-2 py-1 rounded"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -395,3 +385,4 @@ export function Gallery() {
     </div>
   );
 }
+

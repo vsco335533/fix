@@ -98,12 +98,13 @@ CREATE TABLE IF NOT EXISTS posts (
   author_id uuid NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   category_id uuid REFERENCES categories(id) ON DELETE SET NULL,
   featured_image_url text,
-  document_url text,
+  document_urls text[],
   view_count integer DEFAULT 0,
   published_at timestamptz,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
+
 
 -- =============================================
 -- POST_TAGS TABLE (Many-to-Many)
