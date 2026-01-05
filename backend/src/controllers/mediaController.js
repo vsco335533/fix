@@ -128,18 +128,31 @@ export const uploadMedia = async (req, res) => {
 ===================================================== */
 export const getMedia = async (req, res) => {
   try {
-    const { type } = req.query;
+    const { type, unattached, admin_uploads } = req.query;
 
-    const rs = await query(
-      `
-      SELECT *
-      FROM media
-      WHERE status = 'approved'
-      ${type ? "AND type = $1" : ""}
-      ORDER BY created_at DESC
-      `,
-      type ? [type] : []
-    );
+    // Build SQL dynamically to optionally filter by type and whether media is attached to a post
+    let sql = `SELECT * FROM media WHERE status = 'approved'`;
+    const params = [];
+    let i = 1;
+
+    if (type) {
+      sql += ` AND type = $${i}`;
+      params.push(type);
+      i++;
+    }
+
+    if (unattached === '1' || unattached === 'true') {
+      sql += ` AND post_id IS NULL`;
+    }
+
+    if (admin_uploads === '1' || admin_uploads === 'true') {
+      // only include media uploaded by profiles with role = 'super_admin'
+      sql += ` AND uploaded_by IN (SELECT id FROM profiles WHERE role = 'super_admin')`;
+    }
+
+    sql += ` ORDER BY created_at DESC`;
+
+    const rs = await query(sql, params);
 
     res.json(rs.rows);
   } catch (err) {

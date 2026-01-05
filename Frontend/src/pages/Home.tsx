@@ -38,10 +38,10 @@ export function Home() {
       <section className="bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 text-white py-20">
         <div className="max-w-7xl mx-auto text-center px-4">
           <h1 className="text-5xl font-bold mb-6">
-            Advancing Knowledge Through Research
+            Advancing Change Through Research and Action 
           </h1>
           <p className="text-xl text-gray-100 mb-8">
-            Explore groundbreaking research, field studies, and expert insights.
+            Explore our Work.
           </p>
 
           <div className="flex justify-center gap-4">

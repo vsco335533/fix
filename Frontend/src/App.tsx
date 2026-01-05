@@ -9,6 +9,7 @@ import { Research } from './pages/Research';
 import { Videos } from './pages/Videos';
 import { Gallery } from './pages/Gallery';
 import { PostDetail } from './pages/PostDetail';
+import { Contact } from './pages/Contact';
 import { ResearcherDashboard } from './pages/ResearcherDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { PostEditor } from './pages/PostEditor';
@@ -25,6 +26,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/research" element={<Research />} />
               <Route path="/videos" element={<Videos />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/posts/:slug" element={<PostDetail />} />
 

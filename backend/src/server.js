@@ -13,6 +13,7 @@ import postRoutes from './routes/postRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 
 import path from "path";
@@ -55,6 +56,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/contact', contactRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

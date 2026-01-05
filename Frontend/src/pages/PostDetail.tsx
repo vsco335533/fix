@@ -26,7 +26,7 @@ export function PostDetail() {
       <p className="text-gray-600 mb-4">{post.excerpt}</p>
 
       <div className="flex gap-6 text-sm mb-6">
-        <span><User /> {post.profiles.full_name}</span>
+        <span><User /> {post.author_name || post.profiles?.full_name}</span>
         <span><Calendar /> {new Date(post.published_at).toDateString()}</span>
         <span><Eye /> {post.view_count}</span>
       </div>

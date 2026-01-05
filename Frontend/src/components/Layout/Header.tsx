@@ -65,6 +65,12 @@ export function Header() {
           <div className="flex items-center gap-4 relative">
             {user ? (
               <>
+                {/* ROLE BADGE */}
+                {profile?.role && (
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${profile.role === 'super_admin' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                    {profile.role === 'super_admin' ? 'Admin' : 'Researcher'}
+                  </span>
+                )}
                 {/* KEBAB MENU BUTTON */}
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}

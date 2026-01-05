@@ -517,6 +517,7 @@ export const createPost = async (req, res) => {
       type,
       category_id,
       featured_image_url,
+      author_name,
       status = "draft",
     } = req.body;
 
@@ -557,10 +558,11 @@ export const createPost = async (req, res) => {
         type,
         status,
         author_id,
+        author_name,
         category_id,
         featured_image_url
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
       RETURNING *
       `,
       [
@@ -571,6 +573,7 @@ export const createPost = async (req, res) => {
         type,
         status,
         req.user.id,
+        author_name || null,
         category_id,
         featured_image_url,
       ]
@@ -596,6 +599,7 @@ export const updatePost = async (req, res) => {
       content,
       excerpt,
       type,
+      author_name,
       category_id,
       featured_image_url,
       document_urls,
@@ -632,11 +636,12 @@ export const updatePost = async (req, res) => {
         type = COALESCE($5, type),
         category_id = COALESCE($6, category_id),
         featured_image_url = COALESCE($7, featured_image_url),
-        document_urls = COALESCE($8, document_urls),
-        youtube_url = COALESCE($9, youtube_url),
-        status = COALESCE($10, status),
+        author_name = COALESCE($8, author_name),
+        document_urls = COALESCE($9, document_urls),
+        youtube_url = COALESCE($10, youtube_url),
+        status = COALESCE($11, status),
         updated_at = NOW()
-      WHERE id = $11
+      WHERE id = $12
       RETURNING *
       `,
       [
@@ -647,6 +652,7 @@ export const updatePost = async (req, res) => {
         type,
         category_id,
         featured_image_url,
+        author_name,
         document_urls,
         youtube_url,
         status,

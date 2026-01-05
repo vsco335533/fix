@@ -214,7 +214,8 @@ export function Gallery() {
 
   const loadImages = async () => {
     try {
-      const data = await apiGet("/media?type=image");
+      // Only load images that are not attached to posts and were uploaded by admins
+      const data = await apiGet("/media?type=image&unattached=1&admin_uploads=1");
       setImages(data || []);
     } catch (error) {
       console.error("Error loading images:", error);

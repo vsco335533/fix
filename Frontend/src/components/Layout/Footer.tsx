@@ -29,9 +29,9 @@ export function Footer() {
 
           <div>
             <h3 className="text-white font-semibold mb-4">Contact</h3>
-            <p className="text-gray-400 text-sm">
-              For inquiries and collaborations, please reach out through our contact form.
-            </p>
+            <p className="text-gray-400 text-sm">For inquiries and collaborations, please reach out through our <a href="/contact" className="underline">contact form</a>.</p>
+            <p className="text-gray-400 text-sm mt-3">hello@commonscollective.cc</p>
+            <p className="text-gray-400 text-sm">Mithra Hills, Hyder Nagar, Hyderabad, India - 500072</p>
           </div>
         </div>
 

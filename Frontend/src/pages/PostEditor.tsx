@@ -22,6 +22,7 @@ export function PostEditor() {
     excerpt: "",
     type: "research" as "research" | "field_study" | "opinion",
     category_id: "",
+    author_name: "",
     featured_image_url: "",        // manual URL
     document_url: "",              // manual single PDF URL
     document_urls: [] as string[], // uploaded PDFs
@@ -49,6 +50,7 @@ export function PostEditor() {
       excerpt: data.excerpt || "",
       type: data.type,
       category_id: data.category_id || "",
+      author_name: data.author_name || "",
       featured_image_url: data.featured_image_url || "",
       document_url: data.document_url || "",
       document_urls: data.document_urls || [],
@@ -162,6 +164,14 @@ export function PostEditor() {
           placeholder="Title"
           value={formData.title}
           onChange={e => setFormData({ ...formData, title: e.target.value })}
+        />
+
+        {/* AUTHOR NAME (override) */}
+        <input
+          className="w-full border p-2 rounded"
+          placeholder="Author name (optional)"
+          value={formData.author_name}
+          onChange={e => setFormData({ ...formData, author_name: e.target.value })}
         />
 
         {/* EXCERPT */}
