@@ -9,6 +9,7 @@ import {
 import {
   uploadMedia,
   getMedia,
+  downloadMedia,
   approveMedia,
   deleteMedia
 } from "../controllers/mediaController.js";
@@ -30,6 +31,9 @@ router.post(
   upload.single("file"),
   uploadMedia
 );
+
+/* Download (force attachment) */
+router.get("/:id/download", downloadMedia);
 
 /* ===============================
    APPROVE MEDIA (ADMIN ONLY)

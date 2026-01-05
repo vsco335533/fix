@@ -488,6 +488,16 @@ export const getPostBySlug = async (req, res) => {
       );
     }
 
+    // Ensure `media` is a parsed JSON array (pg may return JSON as string)
+    if (post.media && typeof post.media === 'string') {
+      try {
+        post.media = JSON.parse(post.media);
+      } catch (e) {
+        post.media = [];
+      }
+    }
+    if (!Array.isArray(post.media)) post.media = [];
+
     res.json(post);
   } catch (err) {
     console.error("Get post error:", err);

@@ -35,22 +35,29 @@ export function PostDetail() {
         {post.content}
       </div>
 
-      {/* 📄 PDFs */}
-      {post.media.filter((m: any) => m.type === "pdf").length > 0 && (
+      {/* 📄 PDFs (support both legacy 'pdf' and DB 'document') */}
+      {post.media.filter((m: any) => m.type === "pdf" || m.type === "document").length > 0 && (
         <div className="border-t pt-4">
           <h3 className="font-semibold mb-2">Documents</h3>
           {post.media
-            .filter((m: any) => m.type === "pdf")
-            .map((pdf: any) => (
-              <a
-                key={pdf.id}
-                href={pdf.url}
-                download
-                className="block text-blue-600 underline mb-2"
-              >
-                📄 {pdf.title || "Download PDF"}
-              </a>
-            ))}
+            .filter((m: any) => m.type === "pdf" || m.type === "document")
+            .map((pdf: any) => {
+              const fallbackName = (pdf.url || "").split("/").pop() || "file.pdf";
+              const displayName = pdf.title || fallbackName;
+              const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+              const downloadHref = `${API_BASE.replace(/\/$/, '')}/media/${pdf.id}/download`;
+              return (
+                <a
+                  key={pdf.id}
+                  href={downloadHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-blue-600 underline mb-2"
+                >
+                  📄 {displayName}
+                </a>
+              );
+            })}
         </div>
       )}
     </div>
